@@ -16,14 +16,9 @@ if(preg_match('/bondvt04\.home\.lan$/', $_SERVER['HTTP_HOST'])){
     $dbName = "tasker";
     $dbUser = "user";
     $dbPass = "usbw";
-} elseif(preg_match('/.*home\.lan$/', $_SERVER['HTTP_HOST'])){
-    $dbHost = "localhost";
-    $dbName = "clients_repository5x";
-    $dbUser = "user";
-    $dbPass = "usbw";
 } elseif(preg_match('/.*\.lan$/', $_SERVER['HTTP_HOST'])){
     $dbHost = "10.0.0.99";
-    $dbName = "clients_repository5x";
+    $dbName = "tasker";
     $dbUser = "user";
     $dbPass = "usbw";
 }

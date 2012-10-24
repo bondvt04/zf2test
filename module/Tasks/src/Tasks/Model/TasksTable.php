@@ -5,6 +5,7 @@ namespace Tasks\Model;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Stdlib\Hydrator;
 
 class TasksTable extends AbstractTableGateway
 {
@@ -32,23 +33,16 @@ class TasksTable extends AbstractTableGateway
     
     public function addColumn($options = array())
     {
-        $statement = $this->adapter->createStatement("SHOW COLUMNS FROM `{$this->table}` LIKE ?", array('hello'));
-        \Zend\Debug\Debug::dump($statement->getParameterContainer()->setFromArray(array(
-            0 => 'hello',
-        )));
         
-        \Zend\Debug\Debug::dump($statement->execute()->getAffectedRows());
-//        $this->adapter->query("SHOW COLUMNS FROM `{$this->table}` LIKE '{$options['columnName']}'", Adapter::QUERY_MODE_EXECUTE)->current();
-//        \Zend\Debug\Debug::dump($this->adapter->getQueryResultSetPrototype());
-        exit();
+        $hydrator = new \Zend\Stdlib\Hydrator\ArraySerializable();
+        $object = new \ArrayObject(array(
+            'hello' => 'ololo1',
+        ));
         
-        
-        $resultSet = null;
-        // прверяем наличие столбца
-        if(!$this->adapter->query("SHOW COLUMNS FROM `{$this->table}` LIKE '{$options['columnName']}'", Adapter::QUERY_MODE_EXECUTE)->current()) {
-            $resultSet = $this->adapter->query("ALTER TABLE `{$this->table}` ADD COLUMN `{$options['columnName']}` {$options['columnType']}", Adapter::QUERY_MODE_EXECUTE);
-        }
-        return $resultSet;
+        $hydrator->hydrate(array(
+            'world' => 'ololo2',
+        ), $object);
+        \Zend\Debug\Debug::dump($hydrator);exit();
     }
     
     
