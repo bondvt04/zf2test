@@ -18,21 +18,14 @@ class TasksForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'artist',
+            'name' => 'task',
             'attributes' => array(
                 'type'  => 'text',
+                'required' => 'required',
+                'pattern'  => '^0[1-68]([-. ]?[0-9]{2}){4}$',
             ),
             'options' => array(
-                'label' => 'Artist',
-            ),
-        ));
-        $this->add(array(
-            'name' => 'title',
-            'attributes' => array(
-                'type'  => 'text',
-            ),
-            'options' => array(
-                'label' => 'Title',
+                'label' => 'Task',
             ),
         ));
         $this->add(array(
