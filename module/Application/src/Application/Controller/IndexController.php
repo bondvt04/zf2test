@@ -21,7 +21,19 @@ class IndexController extends AbstractActionController
     
     public function indexAction()
     {
+        $task = new \ArrayObject;
+        $task['task'] = 'check my knowledges';
+        
         $tasksForm = $this->getTasksForm();
+        
+        $tasksForm->bind($task);
+        $tasksForm->setData(array(
+            //'task' => 'hello',
+        ));
+        $tasksForm->isValid();
+        
+        \Zend\Debug\Debug::dump($tasksForm->getData());exit();
+        
         return new ViewModel(array(
             'tasksForm' => $tasksForm
         ));
