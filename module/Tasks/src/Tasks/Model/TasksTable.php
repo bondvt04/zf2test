@@ -34,15 +34,81 @@ class TasksTable extends AbstractTableGateway
     public function addColumn($options = array())
     {
         
-        $hydrator = new \Zend\Stdlib\Hydrator\ArraySerializable();
-        $object = new \ArrayObject(array(
-            'hello' => 'ololo1',
+        $artistTable = new \Zend\Db\TableGateway\TableGateway('tasks', $this->adapter);
+        
+        $artistTable->select(function (\Zend\Db\Sql\Select $select) {
+//            $select->where->like('name', 'Brit%');
+            $select->order('name ASC')->limit(2);
+        });
+        
+        \Zend\Debug\Debug::dump('asdf');exit();
+        
+        
+        
+        
+        ////////////////////////////////////////////////////////////////////////
+        $sql = new \Zend\Db\Sql\Sql($this->adapter);
+        
+        $select = $sql->select();
+        $select->from("{$this->table}");
+        
+        $select->where(array(
+            "`id` > '10'",
+            'ololo' => '20',
+            new \Zend\Db\Sql\Predicate\Like('hello', '%zf%'),
+            "hello" => array(
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+            ),
+        ));
+        $pred = new \Zend\Db\Sql\Predicate\Predicate();
+        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%zf1%'));
+        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%zf2%'));
+        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%conf%'));
+        $select->where(array(
+            $pred
         ));
         
-        $hydrator->hydrate(array(
-            'world' => 'ololo2',
-        ), $object);
-        \Zend\Debug\Debug::dump($hydrator);exit();
+//        $where = new \Zend\Db\Sql\Where();
+//        $where->literal('id', 123);
+//        $select->where($where);
+        
+        
+        
+        
+        \Zend\Debug\Debug::dump($select->getSqlString());
+        
+        $select2 = $sql->insert();
+        $select2->into("{$this->table}");
+        $select2->columns(array(
+            "task",
+        ));
+        $select2->values(array(
+            'task' => 'hello',
+        ));
+        \Zend\Debug\Debug::dump($select2->getSqlString());
+        
+        $select3 = $sql->update();
+        $select3->table("{$this->table}");
+        $select3->set(array(
+            "task" => 'hello',
+            "datetime" => '2012-10-24',
+        ));
+        $select3->where(array(
+            "id" => array(
+                '1',
+                '2',
+                '3',
+                '4',
+                '5',
+            ),
+        ));
+        \Zend\Debug\Debug::dump($select3->getSqlString());
+        exit();
+        //\Zend\Debug\Debug::dump($this->selectWith($select)->current()->getArrayCopy());exit();
     }
     
     
