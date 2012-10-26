@@ -17,20 +17,39 @@ use Tasks\Model\TaskModel;
 class IndexController extends AbstractActionController
 {
     protected $tasksTable;
+    protected $tasksForm;
     
     public function indexAction()
     {
-        $taskModel = new TaskModel();
-        $tasksTable = $this->getTasksTable();
-//        \Zend\Debug\Debug::dump($tasksTable->getOlolo()->current());
-//        \Zend\Debug\Debug::dump($tasksTable->fetchAll()->current());
-//        \Zend\Debug\Debug::dump($tasksTable->fetchAll()->current()->getArrayCopy());
-        $tasksTable->addColumn(array(
-            'columnName' => 'hello3',
-            'columnType' => 'varchar (255)',
+        $task = new \ArrayObject;
+        $task['task'] = 'check my knowledges';
+        
+        $tasksForm = $this->getTasksForm();
+        
+        $tasksForm->bind($task);
+        $tasksForm->setData(array(
+            //'task' => 'hello',
         ));
-        exit();
-        return new ViewModel();
+        $tasksForm->isValid();
+        
+        \Zend\Debug\Debug::dump($tasksForm->getData());exit();
+        
+        return new ViewModel(array(
+            'tasksForm' => $tasksForm
+        ));
+    }
+    
+    public function postAction()
+    {
+        $tasksForm = $this->getTasksForm();
+        $tasksForm->setData($this->getRequest()->getPost());
+        
+        if($tasksForm->isValid()) {
+            
+        }
+        return new ViewModel(array(
+            'tasksForm' => $tasksForm
+        ));
     }
     
     public function getTasksTable()
@@ -40,5 +59,13 @@ class IndexController extends AbstractActionController
             $this->tasksTable = $sm->get('Tasks\Model\TasksTable');
         }
         return $this->tasksTable;
+    }
+    
+    public function getTasksForm()
+    {
+        if (!$this->tasksForm) {
+            $this->tasksForm = new \Tasks\Form\TasksForm();
+        }
+        return $this->tasksForm;
     }
 }
