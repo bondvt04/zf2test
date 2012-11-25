@@ -1,6 +1,12 @@
 #deny from all
 #allow from 10.0.0.34
 
+#php_value error_reporting E_ALL
+#php_value display_errors On 
+#php_value display_startup_errors On
+#php_value log_errors On
+#php_value html_errors On
+
 Options +FollowSymLinks
 Options +SymLinksIfOwnerMatch
 

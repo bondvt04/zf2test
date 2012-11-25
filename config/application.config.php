@@ -2,11 +2,17 @@
 
 return array(
     'modules' => array(
-        'Application',
-        'Album',
-        'AdminIndex',
-        'AdminCommon',
+        'CommonApplication',
+        'DefaultIndex',
         'Tasks',
+        'Console',
+        'Tags',
+        'Figlet',
+        'TextTable',
+        'Validator',
+        'Mc',
+        'Cache',
+        'ServiceManager',
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

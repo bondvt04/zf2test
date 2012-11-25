@@ -1,0 +1,28 @@
+<?php
+//ini_set('error_reporting', E_ALL);
+//phpinfo();exit();
+?>
+<a href="<?php echo $this->url('Tasks\index');?>">
+    Tasks
+</a>
+<?php /*
+<?php $this->tasks->buffer();// чтобы можно было делать foreach несколько раз?>
+<div>
+    <a href="<?php echo $this->url('tasks-add');?>">
+        add task
+    </a>
+</div>
+
+<?php
+//\Zend\Debug\Debug::dump($this->tasks->toArray());
+$arr = $this->tasks->toArray();
+?>
+<div>
+    <?php if(count($arr) > 0) {?>
+        <ul>
+            <?php echo $this->partialLoop('default-index/index/task-row.phtml', $arr) ?>
+        </ul>
+    <?php }?>
+</div>
+<?php echo $this->side_right();?>
+*/?>

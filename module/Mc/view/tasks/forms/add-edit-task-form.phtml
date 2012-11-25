@@ -1,0 +1,16 @@
+<?php
+
+$this->form->prepare();
+
+echo $this->form()->openTag($this->form);
+
+$task = $this->form->get('task');
+
+echo $this->formRow($task->get('id'));
+echo $this->formRow($task->get('task'));
+
+
+//echo $this->formHidden($this->form->get('csrf'));
+echo $this->formElement($this->form->get('submit'));
+
+echo $this->form()->closeTag();

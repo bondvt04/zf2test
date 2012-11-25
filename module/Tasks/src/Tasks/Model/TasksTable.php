@@ -3,19 +3,30 @@
 namespace Tasks\Model;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Stdlib\Hydrator;
+use Tasks\Entity\TaskEntity;
+
 
 class TasksTable extends AbstractTableGateway
 {
+    protected $hydrator = null;
     protected $table ='tasks';
 
-    public function __construct(Adapter $adapter)
+    /**
+     * Ждем адаптер, не обязательно общий
+     */
+    public function __construct(Adapter $adapter = null)
     {
+        $this->hydrator = new Hydrator\ObjectProperty;
+        
         $this->adapter = $adapter;
-        $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype(new TaskModel());
+        $this->resultSetPrototype = new HydratingResultSet();
+        $this->resultSetPrototype->setHydrator($this->hydrator)
+                                 ->setObjectPrototype(new TaskEntity(array(
+                                     'hydrator' => $this->hydrator,
+                                 )));
         $this->initialize();
     }
 
@@ -25,94 +36,6 @@ class TasksTable extends AbstractTableGateway
         return $resultSet;
     }
     
-    public function getOlolo()
-    {
-        $resultSet = $this->adapter->query("SELECT * FROM `{$this->table}` WHERE `id` = ?", array(1));
-        return $resultSet;
-    }
-    
-    public function addColumn($options = array())
-    {
-        
-        $artistTable = new \Zend\Db\TableGateway\TableGateway('tasks', $this->adapter);
-        
-        $artistTable->select(function (\Zend\Db\Sql\Select $select) {
-//            $select->where->like('name', 'Brit%');
-            $select->order('name ASC')->limit(2);
-        });
-        
-        \Zend\Debug\Debug::dump('asdf');exit();
-        
-        
-        
-        
-        ////////////////////////////////////////////////////////////////////////
-        $sql = new \Zend\Db\Sql\Sql($this->adapter);
-        
-        $select = $sql->select();
-        $select->from("{$this->table}");
-        
-        $select->where(array(
-            "`id` > '10'",
-            'ololo' => '20',
-            new \Zend\Db\Sql\Predicate\Like('hello', '%zf%'),
-            "hello" => array(
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-            ),
-        ));
-        $pred = new \Zend\Db\Sql\Predicate\Predicate();
-        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%zf1%'));
-        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%zf2%'));
-        $pred->orPredicate(new \Zend\Db\Sql\Predicate\Like('world', '%conf%'));
-        $select->where(array(
-            $pred
-        ));
-        
-//        $where = new \Zend\Db\Sql\Where();
-//        $where->literal('id', 123);
-//        $select->where($where);
-        
-        
-        
-        
-        \Zend\Debug\Debug::dump($select->getSqlString());
-        
-        $select2 = $sql->insert();
-        $select2->into("{$this->table}");
-        $select2->columns(array(
-            "task",
-        ));
-        $select2->values(array(
-            'task' => 'hello',
-        ));
-        \Zend\Debug\Debug::dump($select2->getSqlString());
-        
-        $select3 = $sql->update();
-        $select3->table("{$this->table}");
-        $select3->set(array(
-            "task" => 'hello',
-            "datetime" => '2012-10-24',
-        ));
-        $select3->where(array(
-            "id" => array(
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-            ),
-        ));
-        \Zend\Debug\Debug::dump($select3->getSqlString());
-        exit();
-        //\Zend\Debug\Debug::dump($this->selectWith($select)->current()->getArrayCopy());exit();
-    }
-    
-    
-
     public function getTask($id)
     {
         $id  = (int) $id;
@@ -124,12 +47,11 @@ class TasksTable extends AbstractTableGateway
         return $row;
     }
 
-    public function saveTask(TaskModel $task)
+    public function save(TaskEntity $task)
     {
-        $data = array(
-            'artist' => $task->artist,
-            'title'  => $task->title,
-        );
+        $data = get_object_vars($task);
+        unset($data['id']);
+        
         $id = (int)$task->id;
         if ($id == 0) {
             $this->insert($data);
@@ -142,8 +64,8 @@ class TasksTable extends AbstractTableGateway
         }
     }
 
-    public function deleteTask($id)
+    public function delete($id)
     {
-        $this->delete(array('id' => $id));
+        parent::delete(array('id' => $id));
     }
 }
